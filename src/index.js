@@ -1,9 +1,8 @@
 require('dotenv').config();
 
-const { Client, IntentsBitField } = require('discord.js');
-const { REST, Routes } = require('discord.js');
+const { Client, IntentsBitField, EmbedBuilder, REST, Routes} = require('discord.js');
 
-const registerCommand = require('./commands/register');
+const command = require('./commands/register');
 
 const client = new Client({
     intents: [
@@ -17,7 +16,7 @@ const client = new Client({
 const rest = new REST({ version: '10'}).setToken(process.env.TOKEN);
 
 async function main() {
-    const commands = [registerCommand];
+    const commands = [command];
 
     try {
         console.log('Started refreshing application (/) commands.');
@@ -33,13 +32,44 @@ main();
 client.on('interactionCreate', (interaction) => {
     if(!interaction.isChatInputCommand()) return;
 
-    if(interaction.commandName === 'add') {
-        const num1 = interaction.options.get('first-number').value;
-        const num2 = interaction.options.get('second-number').value;
+    if(interaction.commandName === 'embed') {
+        const embed = new EmbedBuilder()
+        .setTitle('Embed title')
+        .setDescription('Embed description')
+        .setColor('Random')
+        .addFields({
+            name: 'Field title', 
+            value: 'Some random value', 
+            inline: true
+        }, {
+            name: 'Field title', 
+            value: 'Some random value', 
+            inline: true
+        })
 
-        interaction.reply(`The sum between ${num1} and ${num2} is ${num1 + num2}`);
+        interaction.reply({ embeds: [embed] });
     };
 });
+
+client.on('messageCreate', (message) => {
+    if(message.content === 'embed') {
+        const embed = new EmbedBuilder()
+        .setTitle('Embed title')
+        .setDescription('Embed description')
+        .setColor('Random')
+        .addFields({
+            name: 'Field title', 
+            value: 'Some random value', 
+            inline: true
+        }, {
+            name: 'Field title', 
+            value: 'Some random value', 
+            inline: true
+        })
+
+        message.reply({ embeds: [embed] });
+    }
+})
 
 client.on('messageCreate', (message) => {
     if(message.author.bot) return;
