@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { Client, IntentsBitField, EmbedBuilder, REST, Routes, ActionRowBuilder, ButtonBuilder, ButtonStyle} = require('discord.js');
+const { Client, IntentsBitField, EmbedBuilder, REST, Routes, ActionRowBuilder, ButtonBuilder, ButtonStyle, ActivityType } = require('discord.js');
 
 const command = require('./commands/register');
 
@@ -79,70 +79,98 @@ main();
 //     }
 // });
 
-const roles = [
+// const roles = [
+//     {
+//         id: '1113913798944899234',
+//         label: 'Red'
+//     },
+//     {
+//         id: '1113914477662965851',
+//         label: 'Green'
+//     },
+//     {
+//         id: '1113914437338943588',
+//         label: 'Blue'
+//     },
+// ];
+
+// client.on('ready', async (c) => {
+//     try {
+//         const channel = await client.channels.cache.get('1112087746576662702');
+//         if(!channel) return;
+//         const row = new ActionRowBuilder();
+
+//         roles.forEach((role) => {
+//             row.components.push(
+//                 new ButtonBuilder().setCustomId(role.id).setLabel(role.label).setStyle(ButtonStyle.Primary)
+//             )
+//         })
+//         await channel.send({
+//             content: 'Claim or remove a role below',
+//             components: [row]
+//         })
+//         // process.exit();
+//     } 
+//     catch (err) {
+//         console.log(err);
+//     }
+// });
+
+// client.on('interactionCreate', async (interaction) => {
+//     try {
+//         if(!interaction.isButton()) return;
+//         await interaction.deferReply({ ephemeral: true });
+
+//         const role = interaction.guild.roles.cache.get(interaction.customId);
+//         if(!role) {
+//             interaction.editReply({
+//                 content: 'I could not find that role',
+//         })
+//         return;
+//     }
+
+//         const hasRole = interaction.member.roles.cache.has(role.id);
+//         if(hasRole) {
+//         await interaction.member.roles.remove(role);
+//         await interaction.editReply(`The role ${role} has been removed.`);
+//         return;
+//     }
+
+//         await interaction.member.roles.add(role);
+//         await interaction.editReply(`The role ${role} has been added.`);
+//     } 
+
+//     catch (err) {
+//         console.log('Something went wrong.', err);
+//     }
+// });
+
+let status = [
     {
-        id: '1113913798944899234',
-        label: 'Red'
+        name: 'Under control',
+        type: ActivityType.Streaming,
+        url: 'https://www.youtube.com/watch?v=OqxHy8sCtvA&list=PLpmb-7WxPhe0ZVpH9pxT5MtC4heqej8Es&index=6',
     },
     {
-        id: '1113914477662965851',
-        label: 'Green'
+        name: 'Custom Status 1',
     },
     {
-        id: '1113914437338943588',
-        label: 'Blue'
+        name: 'Custom Status 2',
+        type: ActivityType.Watching,
+    },
+    {
+        name: 'Custom Status 3',
+        type: ActivityType.Listening,
     },
 ];
 
-client.on('ready', async (c) => {
-    try {
-        const channel = await client.channels.cache.get('1112087746576662702');
-        if(!channel) return;
-        const row = new ActionRowBuilder();
+client.on('ready', (c) => {
+    console.log(`${c.user.tag} is online.`);
 
-        roles.forEach((role) => {
-            row.components.push(
-                new ButtonBuilder().setCustomId(role.id).setLabel(role.label).setStyle(ButtonStyle.Primary)
-            )
-        })
-        await channel.send({
-            content: 'Claim or remove a role below',
-            components: [row]
-        })
-        // process.exit();
-    } 
-    catch (err) {
-        console.log(err);
-    }
+    setInterval(() => {
+        let random = Math.floor(Math.random() * status.length);
+        client.user.setActivity(status[random]);
+    }, 10000);
 });
-
-client.on('interactionCreate', async (interaction) => {
-    try {
-        if(!interaction.isButton()) return;
-        await interaction.deferReply({ ephemeral: true });
-
-        const role = interaction.guild.roles.cache.get(interaction.customId);
-        if(!role) {
-            interaction.editReply({
-                content: 'I could not find that role',
-        })
-        return;
-    }
-
-        const hasRole = interaction.member.roles.cache.has(role.id);
-        if(hasRole) {
-        await interaction.member.roles.remove(role);
-        await interaction.editReply(`The role ${role} has been removed.`);
-        return;
-    }
-
-        await interaction.member.roles.add(role);
-        await interaction.editReply(`The role ${role} has been added.`);
-    } 
-
-    catch (err) {
-        console.log('Something went wrong.', err);
-    }
-})
 
 client.login(process.env.TOKEN);
