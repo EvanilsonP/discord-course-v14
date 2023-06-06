@@ -1,8 +1,6 @@
 require('dotenv').config();
 
 const { Client, IntentsBitField, EmbedBuilder, REST, Routes, ActionRowBuilder, ButtonBuilder, ButtonStyle, ActivityType } = require('discord.js');
-const eventHandler = require('./handlers/eventHandler');
-
 const command = require('./commands/register');
 
 const client = new Client({
@@ -38,6 +36,8 @@ client.on('messageCreate', (message) => {
     }
 });
 
-eventHandler(client);
+client.on('ready', (c) => {
+    console.log(`${c.user.tag} is now online.`);
+});
 
 client.login(process.env.TOKEN);
