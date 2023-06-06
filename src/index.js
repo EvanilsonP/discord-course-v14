@@ -3,6 +3,7 @@ require('dotenv').config();
 const { Client, IntentsBitField, EmbedBuilder, REST, Routes, ActionRowBuilder, ButtonBuilder, ButtonStyle, ActivityType } = require('discord.js');
 const command = require('./commands/register');
 
+
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -15,7 +16,7 @@ const client = new Client({
 const rest = new REST({ version: '10'}).setToken(process.env.TOKEN);
 
 async function main() {
-    const commands = [command];
+    const commands = [command, timeoutCommand ];
 
     try {
         console.log('Started refreshing application (/) commands.');
@@ -39,5 +40,6 @@ client.on('messageCreate', (message) => {
 client.on('ready', (c) => {
     console.log(`${c.user.tag} is now online.`);
 });
+
 
 client.login(process.env.TOKEN);
